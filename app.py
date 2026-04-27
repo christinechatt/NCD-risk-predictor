@@ -206,7 +206,7 @@ with tab1:
         st.markdown("""
 **Research Overview**
 
-This system is the practical output of a final-year Data Science project at Miva Open University, Abuja. It applies machine learning and Explainable AI to predict the likelihood of non-communicable disease (NCD) risk — specifically hypertension, type 2 diabetes, and obesity — among Nigerian women aged 18–55, based on lifestyle and behavioural data.
+This system is the practical output of a final year Data Science project at Miva Open University, Abuja. It applies machine learning and Explainable AI to predict the likelihood of non-communicable disease (NCD) risk, specifically hypertension, type 2 diabetes, and obesity among Nigerian women aged 18–55, based on lifestyle and behavioural data.
 
 **Why This Matters**
 
@@ -214,28 +214,26 @@ Nigeria currently lacks localised, gender-specific predictive tools for NCD risk
 
 **What the System Does**
 
-A lifestyle questionnaire is used to collect information across six domains: diet, physical activity, sleep, stress, behavioural risk factors, and medical history. A trained Random Forest classifier then predicts whether the user falls into a Low, Medium, or High NCD risk category. The prediction is accompanied by transparent explanations generated using SHAP and LIME — two leading Explainable AI techniques.
+A lifestyle questionnaire is used to collect information across six domains: diet, physical activity, sleep, stress, behavioural risk factors, and medical history. A trained Random Forest classifier then predicts whether the user falls into a Low, Medium, or High NCD risk category. The prediction is accompanied by transparent explanations generated using SHAP and LIME, two leading Explainable AI techniques.
         """)
     with col2:
         st.markdown("""
-**Models Trained & Compared**
+**Model Performance**
 
 | Model | Test Accuracy | AUC-ROC |
 |-------|--------------|---------|
-| **Random Forest** ✅ | **82.93%** | **0.9287** |
+| Random Forest (selected) | 82.93% | 0.9287 |
 | SVM | 82.93% | 0.9164 |
 | Gradient Boosting | 80.49% | 0.9007 |
 | Logistic Regression | 78.05% | 0.8998 |
 
-**Dataset**
-- 203 Nigerian women respondents
-- Primary data collected via structured questionnaire
-- 26 lifestyle features across 6 domains
-- Target variable: NCD Risk Category (Low / Medium / High)
+**Data collected**
 
-**Explainability Methods**
-- **SHAP** (SHapley Additive exPlanations) — global and local feature importance
-- **LIME** (Local Interpretable Model-agnostic Explanations) — instance-level explanations
+203 Nigerian women completed the lifestyle survey. Their responses covered diet, physical activity, sleep, stress, smoking and alcohol habits, family health history, and general health.
+
+**Explanation methods used**
+
+SHAP shows which lifestyle factors matter most across all predictions. LIME explains a single prediction by identifying the specific conditions that pushed the result in one direction.
         """)
 
     st.markdown('<div class="disclaimer">⚠️ <strong>Disclaimer:</strong> This system provides risk assessment only and does not constitute a clinical diagnosis. Results should be discussed with a qualified healthcare provider. The system is designed to support — not replace — professional medical judgment.</div>',
