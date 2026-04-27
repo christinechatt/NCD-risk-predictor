@@ -236,7 +236,7 @@ A lifestyle questionnaire is used to collect information across six domains: die
 SHAP shows which lifestyle factors matter most across all predictions. LIME explains a single prediction by identifying the specific conditions that pushed the result in one direction.
         """)
 
-    st.markdown('<div class="disclaimer">⚠️ <strong>Disclaimer:</strong> This system provides risk assessment only and does not constitute a clinical diagnosis. Results should be discussed with a qualified healthcare provider. The system is designed to support — not replace — professional medical judgment.</div>',
+    st.markdown('<div class="disclaimer">⚠️ <strong>Disclaimer:</strong> This system provides risk assessment only and does not constitute a clinical diagnosis. Results should be discussed with a qualified healthcare provider. The system is designed to support, not replace professional medical judgment.</div>',
                 unsafe_allow_html=True)
 
 # ── TAB 2: PREDICTION ─────────────────────────
