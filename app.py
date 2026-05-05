@@ -35,19 +35,19 @@ st.markdown("""
     .main-header h1 { color: white; font-size: 1.8rem; margin-bottom: 0.3rem; }
     .main-header p  { color: #d6eaf8; font-size: 0.95rem; margin: 0; }
 
-    .risk-low    { background: #d5f5e3; border-left: 6px solid #2ecc71;
-                   padding: 1.2rem; border-radius: 8px; margin: 1rem 0; }
-    .risk-medium { background: #fef9e7; border-left: 6px solid #f39c12;
-                   padding: 1.2rem; border-radius: 8px; margin: 1rem 0; }
-    .risk-high   { background: #fadbd8; border-left: 6px solid #e74c3c;
-                   padding: 1.2rem; border-radius: 8px; margin: 1rem 0; }
+    .risk-low    { background: #1a5c30; border-left: 6px solid #2ecc71;
+                   padding: 1.2rem; border-radius: 8px; margin: 1rem 0; color: #ffffff; }
+    .risk-medium { background: #7a4a00; border-left: 6px solid #f39c12;
+                   padding: 1.2rem; border-radius: 8px; margin: 1rem 0; color: #ffffff; }
+    .risk-high   { background: #7b1a1a; border-left: 6px solid #e74c3c;
+                   padding: 1.2rem; border-radius: 8px; margin: 1rem 0; color: #ffffff; }
 
     .metric-box {
-        background: #f8f9fa; border-radius: 10px;
-        padding: 1rem; text-align: center; border: 1px solid #dee2e6;
+        background: #0D2137; border-radius: 10px;
+        padding: 1rem; text-align: center; border: 1px solid #028090;
     }
-    .metric-box h3 { font-size: 1.6rem; margin: 0; }
-    .metric-box p  { font-size: 0.8rem; color: #6c757d; margin: 0; }
+    .metric-box h3 { font-size: 1.6rem; margin: 0; color: #02C39A; }
+    .metric-box p  { font-size: 0.8rem; color: #d6eaf8; margin: 0; }
 
     .section-header {
         border-bottom: 2px solid #2e86c1;
@@ -318,9 +318,7 @@ with tab2:
         labels = ['Low Risk','Medium Risk','High Risk']
         for col, lbl, prob, clr in zip(cols, labels, proba, colors):
             with col:
-                st.markdown(f'<div class="metric-box"><h3 style="color:{clr}">{prob:.0%}</h3>'
-                            f'<p>{lbl}</p></div>', unsafe_allow_html=True)
-
+                st.markdown(f'<div class="metric-box"><h3>{prob:.0%}</h3>'
         # BMI summary
         st.markdown('<p class="section-header">BMI Summary</p>', unsafe_allow_html=True)
         bmi_cat = "Underweight" if bmi<18.5 else ("Normal" if bmi<25 else ("Overweight" if bmi<30 else "Obese"))
