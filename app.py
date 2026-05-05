@@ -318,7 +318,7 @@ with tab2:
         labels = ['Low Risk','Medium Risk','High Risk']
         for col, lbl, prob, clr in zip(cols, labels, proba, colors):
             with col:
-                st.markdown(f'<div class="metric-box"><h3>{prob:.0%}</h3>'
+                st.markdown(f'<div class="metric-box"><h3>{prob:.0%}</h3>')
         # BMI summary
         st.markdown('<p class="section-header">BMI Summary</p>', unsafe_allow_html=True)
         bmi_cat = "Underweight" if bmi<18.5 else ("Normal" if bmi<25 else ("Overweight" if bmi<30 else "Obese"))
