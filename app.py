@@ -255,98 +255,151 @@ with tab2:
             st.markdown('<div class="risk-high"><h4>🔴 High Risk</h4><p>Multiple lifestyle risk factors are present. Clinical consultation and immediate lifestyle intervention are strongly advised.</p></div>', unsafe_allow_html=True)
     else:
         # Build feature vector
-        input_data = {
-            'bmi':                  bmi,
-            'weight_kg':            weight,
-            'fried_food_enc':       freq_map[fried],
-            'processed_food_enc':   freq_map[processed],
-            'sugary_drinks_enc':    freq_map[sugary],
-            'oil_reuse_enc':        oil_map[oil_reuse],
-            'fruit_servings':       fruit,
-            'veg_servings':         veg,
-            'exercise_days_enc':    exercise_map[ex_days],
-            'exercise_minutes_enc': mins_map[ex_mins],
-            'sitting_hours_enc':    sitting_map[sitting],
-            'sedentary_job':        yn_map[sed_job],
-            'sleep_duration_enc':   sleep_dur_map[sleep_dur],
-            'sleep_quality_enc':    sleep_q_map[sleep_q],
-            'insomnia':             yn_map[insomnia],
-            'stress_level_enc':     stress_map[stress],
-            'overwhelmed_enc':      overwhelm_map[overwhelm],
-            'smoking':              yn_map[smoking],
-            'alcohol_enc':          alcohol_map[alcohol],
-            'secondhand_smoke':     yn_map[secondhand],
-            'family_history_flag':  yn_map[fam_hist],
-            'diagnosed_flag':       yn_map[diagnosed],
-            'frequent_headaches':   yn_map[headaches],
-            'shortness_of_breath':  yn_map[breath],
-            'long_term_medication': yn_map[medication],
-            'self_rated_health':    health
-        }
+    input_data = {
+        'bmi': bmi,
+        'weight_kg': weight,
+        'fried_food_enc': freq_map[fried],
+        'processed_food_enc': freq_map[processed],
+        'sugary_drinks_enc': freq_map[sugary],
+        'oil_reuse_enc': oil_map[oil_reuse],
+        'fruit_servings': fruit,
+        'veg_servings': veg,
+        'exercise_days_enc': exercise_map[ex_days],
+        'exercise_minutes_enc': mins_map[ex_mins],
+        'sitting_hours_enc': sitting_map[sitting],
+        'sedentary_job': yn_map[sed_job],
+        'sleep_duration_enc': sleep_dur_map[sleep_dur],
+        'sleep_quality_enc': sleep_q_map[sleep_q],
+        'insomnia': yn_map[insomnia],
+        'stress_level_enc': stress_map[stress],
+        'overwhelmed_enc': overwhelm_map[overwhelm],
+        'smoking': yn_map[smoking],
+        'alcohol_enc': alcohol_map[alcohol],
+        'secondhand_smoke': yn_map[secondhand],
+        'family_history_flag': yn_map[fam_hist],
+        'diagnosed_flag': yn_map[diagnosed],
+        'frequent_headaches': yn_map[headaches],
+        'shortness_of_breath': yn_map[breath],
+        'long_term_medication': yn_map[medication],
+        'self_rated_health': health
+    }
 
-        input_df = pd.DataFrame([input_data])[feature_columns]
-input_arr = input_df.values
+    input_df = pd.DataFrame([input_data])[feature_columns]
+    input_arr = input_df.values
 
-# Scale the input
-input_scaled = scaler.transform(input_arr)
+    # Scale input
+    input_scaled = scaler.transform(input_arr)
 
-# Make prediction
-prediction = model.predict(input_scaled)[0]
-proba = model.predict_proba(input_scaled)[0]
+    # Prediction
+    prediction = model.predict(input_scaled)[0]
+    proba = model.predict_proba(input_scaled)[0]
 
-label_map = {
-    0: 'Low Risk',
-    1: 'Medium Risk',
-    2: 'High Risk'
-}
+    label_map = {
+        0: 'Low Risk',
+        1: 'Medium Risk',
+        2: 'High Risk'
+    }
 
-risk_label = label_map[prediction]
-confidence = proba[prediction]
+    risk_label = label_map[prediction]
+    confidence = proba[prediction]
 
-        # Store in session for Explanations tab
-st.session_state['input_arr'] = input_arr
-st.session_state['input_scaled'] = input_scaled
-st.session_state['input_df'] = input_df
-st.session_state['prediction'] = prediction
-st.session_state['proba'] = proba
-st.session_state['risk_label'] = risk_label
-st.session_state['bmi'] = bmi
+    # Store in session
+    st.session_state['input_arr'] = input_arr
+    st.session_state['input_scaled'] = input_scaled
+    st.session_state['input_df'] = input_df
+    st.session_state['prediction'] = prediction
+    st.session_state['proba'] = proba
+    st.session_state['risk_label'] = risk_label
+    st.session_state['bmi'] = bmi
 
-        # Result banner
-        risk_class = {'Low Risk':'risk-low','Medium Risk':'risk-medium','High Risk':'risk-high'}[risk_label]
-        risk_emoji = {'Low Risk':'🟢','Medium Risk':'🟡','High Risk':'🔴'}[risk_label]
+    # Result banner
+    risk_class = {
+        'Low Risk': 'risk-low',
+        'Medium Risk': 'risk-medium',
+        'High Risk': 'risk-high'
+    }[risk_label]
 
-        st.markdown(f'<div class="{risk_class}"><h2>{risk_emoji} {risk_label}</h2>'
-                    f'<p>Model confidence: <strong>{confidence:.0%}</strong></p></div>',
-                    unsafe_allow_html=True)
+    risk_emoji = {
+        'Low Risk': '🟢',
+        'Medium Risk': '🟡',
+        'High Risk': '🔴'
+    }[risk_label]
 
-        # Probability bars
-        st.markdown('<p class="section-header">Probability Breakdown</p>',
-                    unsafe_allow_html=True)
-        cols = st.columns(3)
-        colors = ['#2ecc71','#f39c12','#e74c3c']
-        labels = ['Low Risk','Medium Risk','High Risk']
-        for col, lbl, prob, clr in zip(cols, labels, proba, colors):
-            with col:
-                st.markdown(f'<div class="metric-box"><h3>{prob:.0%}</h3>')
-        # BMI summary
-        st.markdown('<p class="section-header">BMI Summary</p>', unsafe_allow_html=True)
-        bmi_cat = "Underweight" if bmi<18.5 else ("Normal" if bmi<25 else ("Overweight" if bmi<30 else "Obese"))
-        bmi_clr = "#2ecc71" if bmi_cat=="Normal" else ("#f39c12" if bmi_cat=="Overweight" else "#e74c3c")
-        st.markdown(f'**BMI: {bmi}** — <span style="color:{bmi_clr};font-weight:bold">{bmi_cat}</span>',
-                    unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="{risk_class}"><h2>{risk_emoji} {risk_label}</h2>'
+        f'<p>Model confidence: <strong>{confidence:.0%}</strong></p></div>',
+        unsafe_allow_html=True
+    )
 
-        fig, ax = plt.subplots(figsize=(8,0.6))
-        ax.barh(['BMI'], [bmi], color=bmi_clr, height=0.4)
-        ax.axvline(18.5, color='gray', linestyle='--', linewidth=0.8)
-        ax.axvline(25,   color='orange', linestyle='--', linewidth=0.8)
-        ax.axvline(30,   color='red',    linestyle='--', linewidth=0.8)
-        ax.set_xlim(10, 50); ax.set_xlabel('BMI')
-        ax.set_yticks([]); ax.spines[['top','right','left']].set_visible(False)
-        plt.tight_layout()
-        st.pyplot(fig); plt.close()
+    # Probability bars
+    st.markdown(
+        '<p class="section-header">Probability Breakdown</p>',
+        unsafe_allow_html=True
+    )
 
-        st.success("✅ Prediction complete. Navigate to the **Explanations** tab to understand the key factors driving this result.")
+    cols = st.columns(3)
+
+    labels = ['Low Risk', 'Medium Risk', 'High Risk']
+
+    for col, lbl, prob in zip(cols, labels, proba):
+        with col:
+            st.markdown(
+                f'''
+                <div class="metric-box">
+                    <h3>{prob:.0%}</h3>
+                    <p>{lbl}</p>
+                </div>
+                ''',
+                unsafe_allow_html=True
+            )
+
+    # BMI Summary
+    st.markdown(
+        '<p class="section-header">BMI Summary</p>',
+        unsafe_allow_html=True
+    )
+
+    bmi_cat = (
+        "Underweight" if bmi < 18.5 else
+        ("Normal" if bmi < 25 else
+         ("Overweight" if bmi < 30 else "Obese"))
+    )
+
+    bmi_clr = (
+        "#2ecc71" if bmi_cat == "Normal" else
+        ("#f39c12" if bmi_cat == "Overweight" else "#e74c3c")
+    )
+
+    st.markdown(
+        f'**BMI: {bmi}** — '
+        f'<span style="color:{bmi_clr};font-weight:bold">{bmi_cat}</span>',
+        unsafe_allow_html=True
+    )
+
+    fig, ax = plt.subplots(figsize=(8, 0.6))
+
+    ax.barh(['BMI'], [bmi], color=bmi_clr, height=0.4)
+
+    ax.axvline(18.5, color='gray', linestyle='--', linewidth=0.8)
+    ax.axvline(25, color='orange', linestyle='--', linewidth=0.8)
+    ax.axvline(30, color='red', linestyle='--', linewidth=0.8)
+
+    ax.set_xlim(10, 50)
+    ax.set_xlabel('BMI')
+    ax.set_yticks([])
+
+    ax.spines[['top', 'right', 'left']].set_visible(False)
+
+    plt.tight_layout()
+
+    st.pyplot(fig)
+
+    plt.close()
+
+    st.success(
+        "✅ Prediction complete. Navigate to the Explanations tab "
+        "to understand the key factors driving this result."
+    )
 
 # ── TAB 3: EXPLANATIONS ───────────────────────
 with tab3:
