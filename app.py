@@ -354,7 +354,7 @@ with tab3:
 
         xai_tab1, xai_tab2 = st.tabs(["🔵 SHAP Explanation", "🟠 LIME Explanation"])
 
-        # SHAP
+# SHAP
 with xai_tab1:
     st.markdown("""
 **SHAP** quantifies each lifestyle factor's contribution to the prediction using game-theory principles.
@@ -362,22 +362,33 @@ Red bars increase risk; green bars decrease it.
 """)
 
     try:
-        shap_values = shap_explainer.shap_values(input_df)
+        shap_values = shap_explainer.shap_values(input_scaled)
 
+        # Handle multiclass output
         if isinstance(shap_values, list):
             sv = shap_values[pred][0]
         else:
-            sv = shap_values[0]
+            sv = shap_values
+
+            # If 3D array: [samples, classes, features]
+            if len(sv.shape) == 3:
+                sv = sv[0, pred, :]
+
+            # If 2D array: [samples, features]
+            elif len(sv.shape) == 2:
+                sv = sv[0]
+
+        # Convert to flat numpy array
+        sv = np.array(sv).flatten()
 
         fig, ax = plt.subplots(figsize=(8, 5))
 
-        colors = ['#e74c3c' if v > 0 else '#2ecc71' for v in sv]
+        colors = [
+            '#e74c3c' if float(v) > 0 else '#2ecc71'
+            for v in sv
+        ]
 
-        sorted_idx = sorted(
-            range(len(sv)),
-            key=lambda i: abs(sv[i]),
-            reverse=True
-        )[:10]
+        sorted_idx = np.argsort(np.abs(sv))[::-1][:10]
 
         ax.barh(
             [display_names[i] for i in sorted_idx],
@@ -398,11 +409,7 @@ Red bars increase risk; green bars decrease it.
 
         importances = model.feature_importances_
 
-        sorted_idx = sorted(
-            range(len(importances)),
-            key=lambda i: importances[i],
-            reverse=True
-        )[:10]
+        sorted_idx = np.argsort(importances)[::-1][:10]
 
         fig, ax = plt.subplots(figsize=(8, 5))
 
@@ -418,7 +425,6 @@ Red bars increase risk; green bars decrease it.
         plt.tight_layout()
         st.pyplot(fig)
         plt.close()
-
         # LIME
         with xai_tab2:
             st.markdown("**LIME** approximates the model locally around this specific prediction, expressing the contribution of each factor as a simple rule.")
