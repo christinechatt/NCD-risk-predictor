@@ -256,7 +256,7 @@ with tab2:
     else:
         
         # Build feature vector
-    input_data = {
+        input_data = {
         'bmi': bmi,
         'weight_kg': weight,
         'fried_food_enc': freq_map[fried],
