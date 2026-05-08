@@ -304,7 +304,7 @@ risk_label = label_map[prediction]
 confidence = proba[prediction]
 
         # Store in session for Explanations tab
-        st.session_state['input_arr'] = input_arr
+st.session_state['input_arr'] = input_arr
 st.session_state['input_scaled'] = input_scaled
 st.session_state['input_df'] = input_df
 st.session_state['prediction'] = prediction
