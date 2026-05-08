@@ -401,11 +401,7 @@ with tab2:
     st.success(
         "✅ Prediction complete. Navigate to the Explanations tab "
         "to understand the key factors driving this result."
-    )
-           
-
-               
-    
+    )     
     }
 
     input_df = pd.DataFrame([input_data])[feature_columns]
