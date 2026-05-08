@@ -254,10 +254,10 @@ with tab2:
         with c3:
             st.markdown('<div class="risk-high"><h4>🔴 High Risk</h4><p>Multiple lifestyle risk factors are present. Clinical consultation and immediate lifestyle intervention are strongly advised.</p></div>', unsafe_allow_html=True)
 
-else:  
+    else:
+
     # Build feature vector
-            input_data = {
-       
+    input_data = {
         'bmi': bmi,
         'weight_kg': weight,
         'fried_food_enc': freq_map[fried],
@@ -284,6 +284,128 @@ else:
         'shortness_of_breath': yn_map[breath],
         'long_term_medication': yn_map[medication],
         'self_rated_health': health
+    }
+
+    input_df = pd.DataFrame([input_data])[feature_columns]
+    input_arr = input_df.values
+
+    # Scale input
+    input_scaled = scaler.transform(input_arr)
+
+    # Prediction
+    prediction = model.predict(input_scaled)[0]
+    proba = model.predict_proba(input_scaled)[0]
+
+    label_map = {
+        0: 'Low Risk',
+        1: 'Medium Risk',
+        2: 'High Risk'
+    }
+
+    risk_label = label_map[prediction]
+    confidence = proba[prediction]
+
+    # Store in session
+    st.session_state['input_arr'] = input_arr
+    st.session_state['input_scaled'] = input_scaled
+    st.session_state['input_df'] = input_df
+    st.session_state['prediction'] = prediction
+    st.session_state['proba'] = proba
+    st.session_state['risk_label'] = risk_label
+    st.session_state['bmi'] = bmi
+
+    # Result banner
+    risk_class = {
+        'Low Risk': 'risk-low',
+        'Medium Risk': 'risk-medium',
+        'High Risk': 'risk-high'
+    }[risk_label]
+
+    risk_emoji = {
+        'Low Risk': '🟢',
+        'Medium Risk': '🟡',
+        'High Risk': '🔴'
+    }[risk_label]
+
+    st.markdown(
+        f'<div class="{risk_class}"><h2>{risk_emoji} {risk_label}</h2>'
+        f'<p>Model confidence: <strong>{confidence:.0%}</strong></p></div>',
+        unsafe_allow_html=True
+    )
+
+    # Probability bars
+    st.markdown(
+        '<p class="section-header">Probability Breakdown</p>',
+        unsafe_allow_html=True
+    )
+
+    cols = st.columns(3)
+
+    labels = ['Low Risk', 'Medium Risk', 'High Risk']
+
+    for col, lbl, prob in zip(cols, labels, proba):
+        with col:
+            st.markdown(
+                f'''
+                <div class="metric-box">
+                    <h3>{prob:.0%}</h3>
+                    <p>{lbl}</p>
+                </div>
+                ''',
+                unsafe_allow_html=True
+            )
+
+    # BMI Summary
+    st.markdown(
+        '<p class="section-header">BMI Summary</p>',
+        unsafe_allow_html=True
+    )
+
+    bmi_cat = (
+        "Underweight" if bmi < 18.5 else
+        ("Normal" if bmi < 25 else
+         ("Overweight" if bmi < 30 else "Obese"))
+    )
+
+    bmi_clr = (
+        "#2ecc71" if bmi_cat == "Normal" else
+        ("#f39c12" if bmi_cat == "Overweight" else "#e74c3c")
+    )
+
+    st.markdown(
+        f'**BMI: {bmi}** — '
+        f'<span style="color:{bmi_clr};font-weight:bold">{bmi_cat}</span>',
+        unsafe_allow_html=True
+    )
+
+    fig, ax = plt.subplots(figsize=(8, 0.6))
+
+    ax.barh(['BMI'], [bmi], color=bmi_clr, height=0.4)
+
+    ax.axvline(18.5, color='gray', linestyle='--', linewidth=0.8)
+    ax.axvline(25, color='orange', linestyle='--', linewidth=0.8)
+    ax.axvline(30, color='red', linestyle='--', linewidth=0.8)
+
+    ax.set_xlim(10, 50)
+    ax.set_xlabel('BMI')
+    ax.set_yticks([])
+
+    ax.spines[['top', 'right', 'left']].set_visible(False)
+
+    plt.tight_layout()
+
+    st.pyplot(fig)
+
+    plt.close()
+
+    st.success(
+        "✅ Prediction complete. Navigate to the Explanations tab "
+        "to understand the key factors driving this result."
+    )
+           
+
+               
+    
     }
 
     input_df = pd.DataFrame([input_data])[feature_columns]
