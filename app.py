@@ -253,10 +253,11 @@ with tab2:
             st.markdown('<div class="risk-medium"><h4>🟡 Medium Risk</h4><p>Some lifestyle factors are elevating NCD risk. Targeted modifications — particularly around diet, activity, and stress — are recommended.</p></div>', unsafe_allow_html=True)
         with c3:
             st.markdown('<div class="risk-high"><h4>🔴 High Risk</h4><p>Multiple lifestyle risk factors are present. Clinical consultation and immediate lifestyle intervention are strongly advised.</p></div>', unsafe_allow_html=True)
-    else:
-        
-        # Build feature vector
-        input_data = {
+
+else:  
+    # Build feature vector
+            input_data = {
+       
         'bmi': bmi,
         'weight_kg': weight,
         'fried_food_enc': freq_map[fried],
@@ -402,6 +403,10 @@ with tab2:
         "to understand the key factors driving this result."
     )
 
+ 
+            
+            
+            
 # ── TAB 3: EXPLANATIONS ───────────────────────
 with tab3:
     if 'prediction' not in st.session_state:
