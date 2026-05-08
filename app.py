@@ -254,6 +254,7 @@ with tab2:
         with c3:
             st.markdown('<div class="risk-high"><h4>🔴 High Risk</h4><p>Multiple lifestyle risk factors are present. Clinical consultation and immediate lifestyle intervention are strongly advised.</p></div>', unsafe_allow_html=True)
     else:
+        
         # Build feature vector
     input_data = {
         'bmi': bmi,
