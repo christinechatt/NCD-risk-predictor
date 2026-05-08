@@ -402,7 +402,6 @@ with tab2:
         "✅ Prediction complete. Navigate to the Explanations tab "
         "to understand the key factors driving this result."
     )     
-    }
 
     input_df = pd.DataFrame([input_data])[feature_columns]
     input_arr = input_df.values
