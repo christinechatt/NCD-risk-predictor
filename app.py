@@ -355,49 +355,69 @@ with tab3:
         xai_tab1, xai_tab2 = st.tabs(["🔵 SHAP Explanation", "🟠 LIME Explanation"])
 
         # SHAP
-        with xai_tab1:
-            st.markdown("**SHAP** quantifies each lifestyle factor's contribution to the prediction using game-theory principles. Red bars increase risk; blue bars decrease it.")
-           try:
-    # Try standard TreeExplainer approach
-    shap_values = shap_explainer.shap_values(input_df)
-    
-    if isinstance(shap_values, list):
-        # Multiclass — pick the predicted class
-        pred_class_idx = int(model.predict(input_scaled)[0])
-        sv = shap_values[pred_class_idx][0]
-    else:
-        sv = shap_values[0]
+with xai_tab1:
+    st.markdown("""
+**SHAP** quantifies each lifestyle factor's contribution to the prediction using game-theory principles.
+Red bars increase risk; green bars decrease it.
+""")
 
-    fig, ax = plt.subplots(figsize=(8, 5))
-    colors = ['#e74c3c' if v > 0 else '#2ecc71' for v in sv]
-    sorted_idx = sorted(range(len(sv)), key=lambda i: abs(sv[i]), reverse=True)[:10]
-    ax.barh(
-        [feature_names[i] for i in sorted_idx],
-        [sv[i] for i in sorted_idx],
-        color=[colors[i] for i in sorted_idx]
-    )
-    ax.axvline(0, color='black', linewidth=0.8)
-    ax.set_xlabel("SHAP Value (impact on prediction)")
-    ax.set_title("Top 10 Features Driving This Prediction")
-    plt.tight_layout()
-    st.pyplot(fig)
+    try:
+        shap_values = shap_explainer.shap_values(input_df)
 
-except Exception as e:
-    # Fallback — use feature importance instead
-    st.warning("SHAP explanation unavailable. Showing feature importance instead.")
-    importances = model.feature_importances_
-    sorted_idx = sorted(range(len(importances)), 
-                       key=lambda i: importances[i], reverse=True)[:10]
-    fig, ax = plt.subplots(figsize=(8, 5))
-    ax.barh(
-        [feature_names[i] for i in sorted_idx],
-        [importances[i] for i in sorted_idx],
-        color='#028090'
-    )
-    ax.set_xlabel("Feature Importance Score")
-    ax.set_title("Top 10 Most Important Features")
-    plt.tight_layout()
-    st.pyplot(fig)
+        if isinstance(shap_values, list):
+            sv = shap_values[pred][0]
+        else:
+            sv = shap_values[0]
+
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        colors = ['#e74c3c' if v > 0 else '#2ecc71' for v in sv]
+
+        sorted_idx = sorted(
+            range(len(sv)),
+            key=lambda i: abs(sv[i]),
+            reverse=True
+        )[:10]
+
+        ax.barh(
+            [display_names[i] for i in sorted_idx],
+            [sv[i] for i in sorted_idx],
+            color=[colors[i] for i in sorted_idx]
+        )
+
+        ax.axvline(0, color='black', linewidth=0.8)
+        ax.set_xlabel("SHAP Value (impact on prediction)")
+        ax.set_title("Top 10 Features Driving This Prediction")
+
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close()
+
+    except Exception as e:
+        st.warning(f"SHAP explanation unavailable: {e}")
+
+        importances = model.feature_importances_
+
+        sorted_idx = sorted(
+            range(len(importances)),
+            key=lambda i: importances[i],
+            reverse=True
+        )[:10]
+
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        ax.barh(
+            [display_names[i] for i in sorted_idx],
+            [importances[i] for i in sorted_idx],
+            color='#028090'
+        )
+
+        ax.set_xlabel("Feature Importance Score")
+        ax.set_title("Top 10 Most Important Features")
+
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close()
 
         # LIME
         with xai_tab2:
