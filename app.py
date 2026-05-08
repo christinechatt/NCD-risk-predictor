@@ -284,23 +284,33 @@ with tab2:
             'self_rated_health':    health
         }
 
-        input_df  = pd.DataFrame([input_data])[feature_columns]
-        input_arr = input_df.values
+        input_df = pd.DataFrame([input_data])[feature_columns]
+input_arr = input_df.values
 
-        prediction = model.predict(input_arr)[0]
-        proba      = model.predict_proba(input_arr)[0]
+# Scale the input
+input_scaled = scaler.transform(input_arr)
 
-        label_map  = {0:'Low Risk', 1:'Medium Risk', 2:'High Risk'}
-        risk_label = label_map[prediction]
-        confidence = proba[prediction]
+# Make prediction
+prediction = model.predict(input_scaled)[0]
+proba = model.predict_proba(input_scaled)[0]
+
+label_map = {
+    0: 'Low Risk',
+    1: 'Medium Risk',
+    2: 'High Risk'
+}
+
+risk_label = label_map[prediction]
+confidence = proba[prediction]
 
         # Store in session for Explanations tab
-        st.session_state['input_arr']  = input_arr
-        st.session_state['input_df']   = input_df
-        st.session_state['prediction'] = prediction
-        st.session_state['proba']      = proba
-        st.session_state['risk_label'] = risk_label
-        st.session_state['bmi']        = bmi
+        st.session_state['input_arr'] = input_arr
+st.session_state['input_scaled'] = input_scaled
+st.session_state['input_df'] = input_df
+st.session_state['prediction'] = prediction
+st.session_state['proba'] = proba
+st.session_state['risk_label'] = risk_label
+st.session_state['bmi'] = bmi
 
         # Result banner
         risk_class = {'Low Risk':'risk-low','Medium Risk':'risk-medium','High Risk':'risk-high'}[risk_label]
@@ -362,6 +372,7 @@ Red bars increase risk; green bars decrease it.
 """)
 
     try:
+        input_scaled = st.session_state['input_scaled']
         shap_values = shap_explainer.shap_values(input_scaled)
 
         # Handle multiclass output
