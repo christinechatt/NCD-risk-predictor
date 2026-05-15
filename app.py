@@ -101,8 +101,8 @@ except Exception as e:
 st.markdown("""
 <div class="main-header">
     <h1>🩺 NCD Risk Prediction System for Nigerian Women</h1>
-    <p>An Explainable Machine Learning System | Miva Open University, Abuja</p>
-    <p>Christiana Chatt Richards &middot; 2023/A/DSC/0001 &middot; Supervisor: Mr. Obaje Williams</p>
+    <p>An Explainable Machine Learning System | Miva Open University</p>
+    <p>Christiana Chatt Richards &middot; 2023/A/DSC/0001 &middot; Supervisor: Mr. Obaje Williams Usman</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -242,7 +242,7 @@ with tab1:
         st.markdown("""
 **Research Overview**
 
-This tool was built as part of a final year Data Science project at Miva Open University, Abuja.
+This tool was built as part of a final year Data Science project at Miva Open University.
 It predicts the likelihood of non-communicable disease (NCD) risk, specifically hypertension,
 type 2 diabetes, and obesity, among Nigerian women aged 18 to 55, using lifestyle information.
 
@@ -526,7 +526,7 @@ with tab4:
 st.markdown("""
 <div class="footer">
     An Explainable Machine Learning System for Predicting Lifestyle-Based Health Risks Among Nigerian Women<br>
-    Christiana Chatt Richards &middot; Department of Data Science &middot; Miva Open University, Abuja &middot; 2025<br>
+    Christiana Chatt Richards &middot; Department of Data Science &middot; Miva Open University &middot; 2026<br>
     <em>For academic demonstration purposes only</em>
 </div>
 """, unsafe_allow_html=True)
